@@ -443,7 +443,7 @@ function MemberFormModal({ open, onClose, onSave, initial, toast }) {
   );
 }
 
-function MembersPage({ members, attendance, onAdd, onUpdate, onDelete, openParams, setView, setViewParams, isAdmin, toast }) {
+function MembersPage({ members, attendance, onAdd, onUpdate, onDelete, openParams, setView, setViewParams, isAdmin, toast, setMobileOpen }) {
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState("name");
   const [formOpen, setFormOpen] = useState(false);
@@ -467,7 +467,7 @@ function MembersPage({ members, attendance, onAdd, onUpdate, onDelete, openParam
 
   return (
     <div>
-      <Topbar title="المخدومون" subtitle={`${members.length} مخدوم مسجَّل`} setMobileOpen={() => {}} />
+      <Topbar title="المخدومون" subtitle={`${members.length} مخدوم مسجَّل`} setMobileOpen={setMobileOpen} />
       <div style={{ display: "flex", gap: 10, marginBottom: 18, flexWrap: "wrap" }}>
         <div style={{ position: "relative", flex: 1, minWidth: 220 }}>
           <Search size={16} style={{ position: "absolute", right: 12, top: 12, color: C.subtext }} />
@@ -590,7 +590,7 @@ function MeetingFormModal({ open, onClose, onSave, initial, toast }) {
   );
 }
 
-function MeetingsPage({ meetings, attendance, onAdd, onUpdate, onDelete, openParams, setView, setViewParams, isAdmin, toast }) {
+function MeetingsPage({ meetings, attendance, onAdd, onUpdate, onDelete, openParams, setView, setViewParams, isAdmin, toast, setMobileOpen }) {
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [confirmDelete, setConfirmDelete] = useState(null);
@@ -603,7 +603,7 @@ function MeetingsPage({ meetings, attendance, onAdd, onUpdate, onDelete, openPar
 
   return (
     <div>
-      <Topbar title="الاجتماعات" subtitle={`${meetings.length} اجتماع`} setMobileOpen={() => {}} />
+      <Topbar title="الاجتماعات" subtitle={`${meetings.length} اجتماع`} setMobileOpen={setMobileOpen} />
       {isAdmin && <div style={{ marginBottom: 18 }}><button onClick={() => { setEditing(null); setFormOpen(true); }} style={btnPrimary}><CalendarPlus size={16} /> إنشاء اجتماع جديد</button></div>}
       {sorted.length === 0 ? (
         <EmptyState icon={Calendar} title="لا توجد اجتماعات بعد" subtitle="أنشئ أول اجتماع لتبدأ بتسجيل الحضور" action={isAdmin && <button onClick={() => setFormOpen(true)} style={btnPrimary}><CalendarPlus size={16} /> إنشاء اجتماع</button>} />
@@ -717,7 +717,7 @@ function AttendancePage({ meeting, members, attendance, currentUser, onSaveAtten
 
 /* ---------------- Reports ---------------- */
 
-function ReportsPage({ members, meetings, attendance }) {
+function ReportsPage({ members, meetings, attendance, setMobileOpen }) {
   const [tab, setTab] = useState("member");
   const [memberId, setMemberId] = useState(members[0]?.id || "");
   const [meetingId, setMeetingId] = useState(meetings[0]?.id || "");
@@ -729,7 +729,7 @@ function ReportsPage({ members, meetings, attendance }) {
 
   return (
     <div>
-      <Topbar title="التقارير والإحصائيات" setMobileOpen={() => {}} />
+      <Topbar title="التقارير والإحصائيات" setMobileOpen={setMobileOpen} />
       <div style={{ display: "flex", gap: 8, marginBottom: 20, borderBottom: `1.5px solid ${C.line}` }}>
         {tabs.map((t) => <button key={t.id} onClick={() => setTab(t.id)} style={{ background: "none", border: "none", padding: "10px 4px", marginLeft: 20, fontWeight: 800, fontSize: 14, color: tab === t.id ? C.navy : C.subtext, borderBottom: tab === t.id ? `3px solid ${C.gold}` : "3px solid transparent", cursor: "pointer" }}>{t.label}</button>)}
       </div>
@@ -838,11 +838,11 @@ function PeriodReportBody({ meetings, attendance, from, to }) {
 
 /* ---------------- Users management ---------------- */
 
-function UsersPage({ users, currentUser, onChangeRole, toast }) {
+function UsersPage({ users, currentUser, onChangeRole, toast, setMobileOpen }) {
   const [confirmChange, setConfirmChange] = useState(null);
   return (
     <div>
-      <Topbar title="إدارة المستخدمين" subtitle={`${users.length} مستخدم`} setMobileOpen={() => {}} />
+      <Topbar title="إدارة المستخدمين" subtitle={`${users.length} مستخدم`} setMobileOpen={setMobileOpen} />
       <div style={{ background: C.mist, borderRadius: 10, padding: "12px 16px", fontSize: 13, color: C.subtext, marginBottom: 16, lineHeight: 1.8 }}>
         الخدام بيسجّلوا حسابهم بنفسهم من شاشة "سجّل حساب جديد"، وإنت كمسؤول تقدر ترفّع أي حد لـ"مسؤول" أو تنزّله لـ"خادم" من هنا.
       </div>
@@ -876,10 +876,10 @@ function UsersPage({ users, currentUser, onChangeRole, toast }) {
 
 /* ---------------- Settings ---------------- */
 
-function SettingsPage({ members, meetings, attendance }) {
+function SettingsPage({ members, meetings, attendance, setMobileOpen }) {
   return (
     <div>
-      <Topbar title="الإعدادات" setMobileOpen={() => {}} />
+      <Topbar title="الإعدادات" setMobileOpen={setMobileOpen} />
       <div style={{ background: C.card, borderRadius: 16, padding: 22, boxShadow: "0 2px 10px rgba(20,30,50,0.05)", marginBottom: 16 }}>
         <div style={{ fontWeight: 800, fontSize: 15.5, marginBottom: 10, color: C.ink }}>عن النظام</div>
         <div style={{ fontSize: 14, color: C.subtext, lineHeight: 1.9 }}>نظام إدارة حضور وغياب أسرة البابا كيرلس — خامسة ابتدائي. البيانات محفوظة على قاعدة بيانات Firebase الحقيقية، وبتتزامن لحظيًا بين كل الخدام.</div>
@@ -1067,13 +1067,13 @@ export default function App() {
 
       <main className="main-content" style={{ marginRight: 240, padding: "24px 28px 60px", minHeight: "100vh" }}>
         {view === "dashboard" && (<><Topbar title="الرئيسية" subtitle={`مرحبًا، ${currentUser.name}`} setMobileOpen={setMobileOpen} /><Dashboard members={members} meetings={meetings} attendance={attendance} setView={setView} setViewParams={setViewParams} /></>)}
-        {view === "members" && <MembersPage members={members} attendance={attendance} onAdd={addMember} onUpdate={updateMember} onDelete={deleteMember} openParams={viewParams} setView={setView} setViewParams={setViewParams} isAdmin={isAdmin} toast={toast} />}
+        {view === "members" && <MembersPage members={members} attendance={attendance} onAdd={addMember} onUpdate={updateMember} onDelete={deleteMember} openParams={viewParams} setView={setView} setViewParams={setViewParams} isAdmin={isAdmin} toast={toast} setMobileOpen={setMobileOpen} />}
         {view === "memberProfile" && <MemberProfile member={members.find((m) => m.id === viewParams.memberId)} attendance={attendance} meetings={meetings} setView={setView} />}
-        {view === "meetings" && <MeetingsPage meetings={meetings} attendance={attendance} onAdd={addMeeting} onUpdate={updateMeeting} onDelete={deleteMeeting} openParams={viewParams} setView={setView} setViewParams={setViewParams} isAdmin={isAdmin} toast={toast} />}
+        {view === "meetings" && <MeetingsPage meetings={meetings} attendance={attendance} onAdd={addMeeting} onUpdate={updateMeeting} onDelete={deleteMeeting} openParams={viewParams} setView={setView} setViewParams={setViewParams} isAdmin={isAdmin} toast={toast} setMobileOpen={setMobileOpen} />}
         {view === "attendance" && <AttendancePage meeting={meetings.find((m) => m.id === viewParams.meetingId)} members={members} attendance={attendance} currentUser={currentUser} onSaveAttendance={saveAttendance} setView={setView} />}
-        {view === "reports" && <ReportsPage members={members} meetings={meetings} attendance={attendance} />}
-        {view === "users" && isAdmin && <UsersPage users={users} currentUser={currentUser} onChangeRole={changeUserRole} toast={toast} />}
-        {view === "settings" && <SettingsPage members={members} meetings={meetings} attendance={attendance} />}
+        {view === "reports" && <ReportsPage members={members} meetings={meetings} attendance={attendance} setMobileOpen={setMobileOpen} />}
+        {view === "users" && isAdmin && <UsersPage users={users} currentUser={currentUser} onChangeRole={changeUserRole} toast={toast} setMobileOpen={setMobileOpen} />}
+        {view === "settings" && <SettingsPage members={members} meetings={meetings} attendance={attendance} setMobileOpen={setMobileOpen} />}
       </main>
 
       <Toasts toasts={toasts} remove={(id) => setToasts((t) => t.filter((x) => x.id !== id))} />
